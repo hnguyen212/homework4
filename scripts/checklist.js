@@ -12,37 +12,42 @@
       throw new Error('Could not find element with selector: ' + selector);
     }
   }
+
+  CheckList.prototype.addClickHandler = function(fn) {
+    this.$element.on('click', 'input', function(event) {
+      var email = event.target.value;
+      this.removeRow(email);
+      fn(email);
+    }.bind(this));
+  };
+
   CheckList.prototype.addRow = function(coffeeOrder) {
-    this.removeRow(coffeeOrder.email);
+    // Remove any existing rows that match the email address
+    this.removeRow(coffeeOrder.emailAddress);
+    // Create a new instance of a row, using the coffee order info
     var rowElement = new Row(coffeeOrder);
+    // Add the new row instance's $element property to the checklist
     this.$element.append(rowElement.$element);
   };
+
   CheckList.prototype.removeRow = function(email) {
     this.$element
       .find('[value="' + email + '"]')
       .closest('[data-coffee-order="checkbox"]')
-      .empty();
-  };
-  CheckList.prototype.addClickHandler = function(fn) {
-    this.$element.on('click', 'input', function(event) {
-      fn(event.target.value)
-        .then(function() {
-          this.removeRow(event.target.value);
-        }.bind(this));
-    }.bind(this));
+      .remove();
   };
 
   function Row(coffeeOrder) {
-    var $div = $('<div/>', {
+    var $div = $('<div></div>', {
       'data-coffee-order': 'checkbox',
-      class: 'checkbox'
+      'class': 'checkbox'
     });
 
     var $label = $('<label></label>');
 
     var $checkbox = $('<input></input>', {
       type: 'checkbox',
-      value: coffeeOrder.email
+      value: coffeeOrder.emailAddress
     });
 
     var description = coffeeOrder.size + ' ';
@@ -50,7 +55,7 @@
       description += coffeeOrder.flavor + ' ';
     }
     description += coffeeOrder.coffee + ', ';
-    description += ' (' + coffeeOrder.email + ')';
+    description += ' (' + coffeeOrder.emailAddress + ')';
     description += ' [' + coffeeOrder.strength + 'x]';
 
     $label.append($checkbox);
