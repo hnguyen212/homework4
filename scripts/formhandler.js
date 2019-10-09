@@ -15,17 +15,14 @@
   }
 
   FormHandler.prototype.addSubmitHandler = function(fn) {
-    /* eslint-disable-next-line no-console */
     console.log('Setting submit handler for form');
     this.$formElement.on('submit', function(event) {
       event.preventDefault();
       var data = {};
       $(this).serializeArray().forEach(function(item) {
         data[item.name] = item.value;
-        /* eslint-disable-next-line no-console */
         console.log(item.name + ' is ' + item.value);
       });
-      /* eslint-disable-next-line no-console */
       console.log(data);
       fn(data);
       this.reset();
@@ -34,7 +31,6 @@
   };
 
   FormHandler.prototype.addInputHandler = function(fn) {
-    /* eslint-disable-next-line no-console */
     console.log('Setting input handler for form');
     this.$formElement.on('input', '[name="emailAddress"]', function(event) {
       var emailAddress = event.target.value;
